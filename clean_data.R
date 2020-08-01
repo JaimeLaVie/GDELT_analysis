@@ -1,22 +1,21 @@
 # 本程序在已收集到的完整数据中筛选所需数据，并保存
-# library(scales)
-
-# par(mfrow=c(1,3))
-gdelt <- read.csv('gdelt_data/gdelt_2018_01_01.csv')
-
-print (gdelt[:][1])
+gdelt <- read.csv('gdelt_data/gdelt_2018_01_05.csv')
 
 length_gdelt <- length(gdelt$MonthYear)
 
 print (length_gdelt)
 
-#for (i in 1:length_gdelt)
-#{
-#  if 
-#}
+# 创建空表
+data <- gdelt[1,]
+data <- data[-1,]
 
-# ggplot(num, aes(x = num$No, y = num$attitudes)) + 
-  # geom_line( position = "identity", color = '#984ea3') +
-  # labs(x = 'Time', y = 'Number of Attitudes', size = 18) +
-  # guides(fill=FALSE)
+for (i in 1:length_gdelt) {
+  if (gdelt[i,'Actor1CountryCode'] == 'CHN') {
+    print (gdelt[i,'GLOBALEVENTID'])
+    data <- rbind(data[1:nrow(data),], gdelt[i,])
+  }
+}
+
+write.csv(data, file = "chn.csv", row.names = FALSE)
+
 
