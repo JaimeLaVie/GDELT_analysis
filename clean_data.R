@@ -4,13 +4,16 @@
 # par(mfrow=c(1,3))
 gdelt <- read.csv('gdelt_data/gdelt_2018_01_01.csv')
 
-# print (gdelt$MonthYear)
+print (gdelt[:][1])
 
 length_gdelt <- length(gdelt$MonthYear)
 
 print (length_gdelt)
 
-for (i in 1:length_gdelt)
+#for (i in 1:length_gdelt)
+#{
+#  if 
+#}
 
 # ggplot(num, aes(x = num$No, y = num$attitudes)) + 
   # geom_line( position = "identity", color = '#984ea3') +

@@ -1,18 +1,12 @@
 import os
-print ('os yes')
 import gdelt
-print ('gdelt yes')
 import pandas as pd
-print ('pandas yes')
 from datetime import datetime
-print ('datetime yes')
 
 year = '2018'
 start_date = '0420'
 end_date = '1231'
 target_file = os.getcwd() + '/gdelt_data'
-
-print ('yes')
 
 def datelist(beginDate, endDate):
     # beginDate, endDate是形如‘20160601’的字符串或datetime格式
