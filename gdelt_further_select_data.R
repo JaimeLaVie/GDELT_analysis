@@ -1,16 +1,9 @@
-# 本程序在已收集到的完整数据中筛选所需数据，并保存
+# 本程序在进一步筛选所需数据，并保存
 rm(list = ls())
 
 library(stringr)
 
 setwd("G:\\")
-# 截止至20200814的亚洲、欧洲参与一带一路国家名单，来源：https://www.yidaiyilu.gov.cn/gbjg/gbgk/77073.htm
-countries <- c('CHN', 'KOR', 'MNG', 'SGP', 'TLS', 'MYS', 'MMR', 'KHM', 'VNM', 'LAO', 'BRN', 'PAK', 'LKA',
-               'BGD', 'NPL', 'MDV', 'ARE', 'KWT', 'TUR', 'QAT', 'OMN', 'LBN', 'SAU', 'BHR', 'IRN', 'IRQ',
-               'AFG', 'AZE', 'GEO', 'ARM', 'KAZ', 'KGZ', 'TJK', 'UZB', 'THA', 'IDN', 'PHL', 'YEM',
-               'CYP', 'RUS', 'AUT', 'GRC', 'POL', 'SRB', 'CZE', 'BGR', 'SVK', 'ALB', 'HRV', 'BIH', 'MNE',
-               'EST', 'LTU', 'SVN', 'HUN', 'MKD', 'ROU', 'LVA', 'UKR', 'BLR', 'MDA', 'MLT', 'PRT', 'ITA', 
-               'LUX')
 rivers <- c('water', 'stream', 'river', 'tributary', 'canal', 'lake', 'channel','reservoir',
             'alakol', 'amur', 'an-nahr-al-kabir', 'annahralkabir', 'an-nahr', 'annahr',
             'al-kabir', 'alkabir', 'aral', 'asi', 'orontes', 'astara', 'chay', 'atrak', 
@@ -44,52 +37,61 @@ rivers <- c('water', 'stream', 'river', 'tributary', 'canal', 'lake', 'channel',
             'vefsna', 'vijose', 'velaka', 'volga', 'vardar', 'vistula', 'wista', 'vuoksa', 'wiedau', 'yser')
 symbols <- c('-', '_', '%2', '%20')    # 词前后加上-或_以避免误收录
 plus <- c('pollut', 'contamin', 'toxic', 'waste', 'purification', 'sewage', 'effluence', 'scarc', 'shortage',
-          'lack', 'insufficiency', 'dike', 'dyke', 'irrigation', 'dam', 'diversion', 'flood', 'drought')
-# 1.多个词组成的名字只能分开成多个，或删除空格后保留，或用-替代空格；2.有些词可能恰好出现在网址中，如‘po’。
-gdelt_files <- list.files("G:\\gdelt_data")
-length_files <- length(gdelt_files)
+          'lack', 'insufficiency', 'dike', 'dyke', 'irrigation', 'dam', 'diversion', 'flood', 'drought', 
+          'countr', 'state', 'nation', 'conflict', 'collid', 'collision')
+# oil
+# 2019
 length_rivers <- length(rivers)
 length_symbols <- length(symbols)
+length_plus <- length(plus)
 
-for (num in 1:length_files) {
-  if (nchar(gdelt_files[num]) >= 18 && str_detect(gdelt_files[num], ".csv$") == TRUE){ #使用20130401之后的数据
-    print (gdelt_files[num])
-    csv_file <- read.csv(paste("G:\\gdelt_data\\", gdelt_files[num], sep = "\\"))
-    length_csv_file <- length(csv_file$MonthYear)
-    print (length_csv_file)
+year <- 2013
+csv_file <- read.csv(paste(paste("G:\\gdelt_data_selected\\", year, sep = ""), ".csv", sep = ""))
+length_csv_file <- length(csv_file$MonthYear)
+print (length_csv_file)
     
-    # 创建空表
-    data <- csv_file[1,]
-    data$river <- NA
-    data <- data[-1,]
+# 创建空表
+data <- csv_file[1,]
+data$support <- NA
+data <- data[-1,]
     
-    # ！删去.com之前的网址√
-    # ！+“-”√
-    # ！删除非国家行为体√
-    # ！加一列：具体流域√
-    
-    for (i in 1:length_csv_file){
-      if (((csv_file[i, 'Actor1CountryCode'] %in% countries && is.na(csv_file[i, 'Actor2CountryCode']) == FALSE) || (csv_file[i, 'Actor2CountryCode'] %in% countries && is.na(csv_file[i, 'Actor1CountryCode']) == FALSE) ) && csv_file[i, 'MonthYear'] == substring(gdelt_files[num],7,12)){
-        for (j in 1:length_rivers){
-          for (k in 1:length_symbols){
-            river <- gsub('-', symbols[k], rivers[j])  # 某些河流由数个词组成，应考虑到网址中的各种隔断方式
-            keyword <- paste(paste(symbols[k], river, sep = ""), symbols[k], sep = "")
-            web <- unlist(strsplit(as.character(csv_file[i, 'SOURCEURL']), split='/'))
-            lengthweb <- length(web)
-            if (str_detect(tolower(paste(web[lengthweb - 1], web[lengthweb], sep = "")), keyword) == TRUE){
-              newline <- csv_file[i,]
-              newline$river <- rivers[j]
-              data <- rbind(data[1:nrow(data),], newline)
-              break
-            }
+for (i in 1:length_csv_file){
+  print (csv_file[i, 'dateEvent'])
+  flag <- 0
+  web <- unlist(strsplit(as.character(csv_file[i, 'SOURCEURL']), split='/'))
+  lengthweb <- length(web)
+  for (h in 1:length_plus){
+    for (k in 1:length_symbols){
+      keyword <- paste(paste(symbols[k], plus[h], sep = ""), symbols[k], sep = "")
+      if (str_detect(tolower(paste(web[lengthweb - 1], web[lengthweb], sep = "")), keyword) == TRUE){
+        newline <- csv_file[i,]
+        newline$support <- plus[h]
+        flag <- 1
+        break
+      }
+    }
+  }
+  if (flag == 0){
+    for (j in 1:length_rivers){
+      if (rivers[j] != as.character(csv_file[i, 'river'])){   # 若有与此前纪录不同的另一河流名称出现，则保留
+        for (k in 1:length_symbols){
+          river <- gsub('-', symbols[k], rivers[j])  # 某些河流由数个词组成，应考虑到网址中的各种隔断方式
+          keyword <- paste(paste(symbols[k], river, sep = ""), symbols[k], sep = "")
+          if (str_detect(tolower(paste(web[lengthweb - 1], web[lengthweb], sep = "")), keyword) == TRUE){
+            newline <- csv_file[i,]
+            newline$support <- rivers[j]
+            flag <- 1
+            break
           }
         }
       }
     }
-    # data <- data[-1,]   # 删去全为NA的首行
-    write.csv(data, file = paste(substring(gdelt_files[num],7,14), ".csv", sep = ""), row.names = FALSE)
+  }
+  if (flag == 1){
+    data <- rbind(data[1:nrow(data),], newline)
   }
 }
 
-
-
+# data <- data[-1,]   # 删去全为NA的首行
+print ('保存中...')
+write.csv(data, file = paste(paste("G:\\gdelt_data_selected\\select__", year, sep = ""), ".csv", sep = ""), row.names = FALSE)
