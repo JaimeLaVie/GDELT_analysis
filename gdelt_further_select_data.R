@@ -39,11 +39,11 @@ symbols <- c('-', '_', '%2', '%20')    # 词前后加上-或_以避免误收录
 plus <- c('pollut', 'contamin', 'toxic', 'waste', 'purification', 'sewage', 'effluence', 'scarc', 'shortage',
           'lack', 'insufficiency', 'dike', 'dyke', 'irrigation', 'dam', 'diversion', 'flood', 'drought', 
           'countr', 'state', 'nation', 'conflict', 'collid', 'collision')
-# oil
-# 2019
+negative <- c('oil')
 length_rivers <- length(rivers)
 length_symbols <- length(symbols)
 length_plus <- length(plus)
+length_negative <- length(negative)
 
 year <- 2013
 csv_file <- read.csv(paste(paste("G:\\gdelt_data_selected\\", year, sep = ""), ".csv", sep = ""))
@@ -57,41 +57,47 @@ data <- data[-1,]
     
 for (i in 1:length_csv_file){
   print (csv_file[i, 'dateEvent'])
-  flag <- 0
+  flag_save <- 0
+  flag_neg <- 0
   web <- unlist(strsplit(as.character(csv_file[i, 'SOURCEURL']), split='/'))
   lengthweb <- length(web)
-  for (h in 1:length_plus){
-    for (k in 1:length_symbols){
-      keyword <- paste(paste(symbols[k], plus[h], sep = ""), symbols[k], sep = "")
-      if (str_detect(tolower(paste(web[lengthweb - 1], web[lengthweb], sep = "")), keyword) == TRUE){
-        newline <- csv_file[i,]
-        newline$support <- plus[h]
-        flag <- 1
-        break
-      }
+  for (q in length_negative){
+    if (str_detect(tolower(paste(web[lengthweb - 1], web[lengthweb], sep = "")), negative[q]) == TRUE){
+      flag_neg <- 1
+      break
     }
   }
-  if (flag == 0){
-    for (j in 1:length_rivers){
-      if (rivers[j] != as.character(csv_file[i, 'river'])){   # 若有与此前纪录不同的另一河流名称出现，则保留
-        for (k in 1:length_symbols){
-          river <- gsub('-', symbols[k], rivers[j])  # 某些河流由数个词组成，应考虑到网址中的各种隔断方式
-          keyword <- paste(paste(symbols[k], river, sep = ""), symbols[k], sep = "")
-          if (str_detect(tolower(paste(web[lengthweb - 1], web[lengthweb], sep = "")), keyword) == TRUE){
-            newline <- csv_file[i,]
-            newline$support <- rivers[j]
-            flag <- 1
-            break
+  if (flag_neg == 0){
+    for (h in 1:length_plus){    # 注意到plus中的很多词语并不完整，故不能在前后加符号
+      if (str_detect(tolower(paste(web[lengthweb - 1], web[lengthweb], sep = "")), plus[h]) == TRUE){
+        newline <- csv_file[i,]
+        newline$support <- plus[h]
+        flag_save <- 1
+        break
+        }
+    }
+    if (flag_save == 0){
+      for (j in 1:length_rivers){
+        if (rivers[j] != as.character(csv_file[i, 'river'])){   # 若有与此前纪录不同的另一河流名称出现，则保留
+          for (k in 1:length_symbols){
+            river <- gsub('-', symbols[k], rivers[j])  # 某些河流由数个词组成，应考虑到网址中的各种隔断方式
+            keyword <- paste(paste(symbols[k], river, sep = ""), symbols[k], sep = "")
+            if (str_detect(tolower(paste(web[lengthweb - 1], web[lengthweb], sep = "")), keyword) == TRUE){
+              newline <- csv_file[i,]
+              newline$support <- rivers[j]
+              flag_save <- 1
+              break
+            }
           }
         }
       }
     }
-  }
-  if (flag == 1){
-    data <- rbind(data[1:nrow(data),], newline)
+    if (flag_save == 1){
+      data <- rbind(data[1:nrow(data),], newline)
+    }
   }
 }
 
 # data <- data[-1,]   # 删去全为NA的首行
 print ('保存中...')
-write.csv(data, file = paste(paste("G:\\gdelt_data_selected\\select__", year, sep = ""), ".csv", sep = ""), row.names = FALSE)
+write.csv(data, file = paste(paste("G:\\gdelt_data_selected\\select_", year, sep = ""), ".csv", sep = ""), row.names = FALSE)

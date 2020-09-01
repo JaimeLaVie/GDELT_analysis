@@ -51,7 +51,7 @@ length_rivers <- length(rivers)
 length_symbols <- length(symbols)
 
 for (num in 1:length_files) {
-  year <- 2014
+  year <- 2019
   if (str_sub(gdelt_files[num], 7, 10) == year && nchar(gdelt_files[num]) >= 18 && str_detect(gdelt_files[num], ".csv$") == TRUE){ # 指定年份为2013，使用20130401之后的数据
     print (gdelt_files[num])
     csv_file <- read.csv(paste("G:\\gdelt_data\\", gdelt_files[num], sep = "\\"))
