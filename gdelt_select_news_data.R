@@ -19,41 +19,59 @@ countries <- c('China', 'South Korea', 'Republic of Korea', 'ROK', 'Mongolia', '
                'Kuwait', 'Turkey', 'Qatar', 'Oman', 'Lebanon', 'Saudi Arabia', 'Bahrain', 'Iran', 'Iraq',
                'Afghanistan', 'Azerbaijan', 'Georgia', 'Armenia', 'Kazakhstan', 'Kyrgyzstan', 'Tajikistan',
                'Uzbekistan', 'Thailand', 'Indonesia', 'Philippines', 'Yemen',
-               'Cyprus', 'Russia', 'Austria', 'Greece', 'Poland', 'Serbia', 'Czech Republic', 'Bulgaria',
-               'Slovakia', 'Albania', 'Croatia', 'Bosnia', 'Herzegovina', 'Montenegro', 'Estonia', 'Lithuania',
-               'Slovenia', 'Hungary', 'North Macedonia', 'Romania', 'Latvia', 'Ukraine', 'Belarus', 'Moldova',
-               'Malta', 'Portugal', 'Italy', 'Luxembourg')
-rivers <- c('water', 'stream', 'river', 'tributary', 'canal', 'lake', 'channel','reservoir',
-            'alakol', 'amur', 'an-nahr-al-kabir', 'annahralkabir', 'an-nahr', 'annahr',
-            'al-kabir', 'alkabir', 'aral', 'asi', 'orontes', 'astara', 'chay', 'atrak', 
-            'beilun', 'bangau', 'ca', 'song-lam', 'songlam', 'coruh', 'digul', 'dasht', 
-            'fly', 'fenney', 'ganges-brahmaputra-meghna', 'gangesbrahmaputrameghna', 
-            'golok', 'han', 'hari', 'harirud', 'hamun-i-mashkel', 'hamunimashkel', 
-            'rakshan', 'helmand', 'har-us-nur', 'harusnur', 'bei-jiang', 'beijiang', 
-            'hsi', 'ili', 'kunes-he', 'kuneshe', 'indus', 'irrawaddy', 
-            'jayapura', 'jordan', 'kaladan', 'karnaphuli', 'kowl-e-namaksar', 'kowlenamaksar',
-            'kura-araks', 'kuraaraks', 'sarygamesh', 'ubsa-nur', 'ubsanur','loes', 
-            'maro', 'ma', 'mekong', 'muhuri', 'murgab', 'naaf', 'nahr-el-kebir', 
-            'nahrelkebir', 'ob', 'pakchan', 'pandaruan', "pu-lun-t'o", 'pu-lun-to', 
-            'pulunto', 'rann-of-kutch', 'rannofkutch', 'red', 
-            'song-hong', 'songhong', 'rach-giang-thanh', 'rachgiangthanh', 
-            'nha-be-saigon-song-vam-co-dong', 'nhabesaigonsongvamcodong',
-            'salween', 'sebuku', 'sepik', 'song-tien-yen', 'songtienyen', 'shu', 
-            'chu', 'sembakung', 'sujfun', 'talas', 'tami', 'tigris-euphrates', 
-            'tigriseuphrates', 'shatt-al-arab', 'shattalarab', 'tjeroaka-wanggoe', 
-            'tjeroakawanggoe', 'tarim', 'tumen', 'vanimo-green', 'vanimogreen', 'yalu', 
-            'jenisej', 'yenisey',  # 以上亚洲，以下欧洲；
-            'adige', 'angerman', 'bann','bidasoa', 'berbyelva', 'barta', 'castletown', 'cetina', 'danube',
-            'dnieper', 'dniester', 'don', 'dragonja', 'drin', 'daugava', 'douro', 'duero', 'ebro', 
-            'elbe', 'elancik', 'erne', 'fane', 'flurry', 'foyle', 'glama', 'garonne', 'gruzskiy', 
-            'yelanchik', 'guadiana', 'gauja', 'indalsalven', 'isonzo', 'jacobs', 'kemi', 'kogilnik', 'krka', 
-            'klaralven', 'lava', 'pregel', 'lima', 'lake', 'prespa', 'lielupe', 'lough', 'melvin', 
-            'mino', 'mius', 'maritsa', 'naatamo', 'nidelva', 'neman', 'neretva', 'narva', 'nestos', 'narynka', 
-            'oder', 'odra', 'olanga', 'oral', 'ural', 'oulu', 'peschanaya', 
-            'poldnevaya', 'po', 'prohladnaja', 'parnu', 'psou', 'pasvik', 'rezvaya', 'rhine', 
-            'meuse', 'rhone', 'roia', 'salaca', 'samur', 'seine', 'schelde', 'sarata', 'struma', 'sulak', 
-            'tagus', 'tejo', 'tana', 'terek', 'torne', 'tornealven', 'tuloma', 'vecht', 'venta',
-            'vefsna', 'vijose', 'velaka', 'volga', 'vardar', 'vistula', 'wista', 'vuoksa', 'wiedau', 'yser')
+               'Cyprus', 'Russia', 'Austria', 'Greece', 'Poland', 'Serbia', 'Czech', 'Bulgaria', 'Slovakia',
+               'Albania', 'Croatia', 'Bosnia', 'Herzegovina', 'Montenegro', 'Estonia', 'Lithuania', 'Slovenia',
+               'Hungary', 'North Macedonia', 'Romania', 'Latvia', 'Ukraine', 'Belarus', 'Moldova', 'Malta', 
+               'Portugal', 'Italy', 'Luxembourg')
+rivers <- c(# 'water', 'stream', 'river', 'tributary', 'canal', 'lake', 'channel','reservoir',
+            # 非洲
+            'Akpa', 'Annole', 'Awash', 'Bahr at Tubat', 'Benito', 'Ntem', 'Bia', 'Oued Bou Namoussa',
+            'Baraka', 'Buzi', 'Chiloango', 'Congo', 'Zaire', 'Cross', 'Cestos', 'Cavally', 'Daoura',
+            'Dra', 'Cuvelai', 'Etosha', 'Gambia', 'Gash', 'Geba-Corubal', 'Galana', 'Great Scarcies',
+            'Guir', 'Incomati', 'Juba-Shibeli', 'Komoe', 'Kunene', 'Lotagipi Swamp', 'Lake Chad',
+            'Lake Chilwa', 'Lake Cayo', 'Lak Dera', 'Lake Natron', 'Lake Rukwa', 'Lake Turkana', 'Limpopo',
+            'Loffa', 'Little Scarcies', 'Mana-Morro', 'Mbe', 'Medjerda', 'Moa', 'Mono', 'Maputo', 'Niger',
+            'Nile', 'Nyanga', 'Oued Bon Naima', 'Ogooue', 'Okavango', 'Orange', 'Oueme', 'Pangani',
+            'Pungwe', 'Ruvuma', 'Sabi', 'Sanaga', 'Sassandra', 'Senegal', 'St. John', 'St. Paul', 'Tafna',
+            'Tano', 'Umbeluzi', 'Umba', 'Utamboni', 'Volta', 'Zambezi',
+            # 亚洲
+            'Alakol', 'Amur', 'An Nahr Al Kabir', 'Aral Sea', 'Asi', 'Orontes', 'Astara Chay', 'Atrak',
+            'Beilun', 'Bangau', 'Ca', 'Song Lam', 'Coruh', 'Digul', 'Dasht', 'Fly', 'Fenney', 'Ganges-Brahmaputra-Meghna',
+            'Golok', 'Han', 'Hari', 'Harirud', 'Hamun-i-Mashkel', 'Rakshan', 'Helmand', 'Har Us Nur',
+            'Bei Jiang/Hsi', 'Ili', 'Kunes He', 'Indus', 'Irrawaddy', 'Jayapura', 'Jordan', 'Kaladan',
+            'Karnaphuli', 'Kowl E Namaksar', 'Kura-Araks', 'Lake Sarygamesh', 'Lake Ubsa-Nur', 'Loes',
+            'Maro', 'Ma', 'Mekong', 'Muhuri', 'Little Feni', 'Murgab', 'Naaf River', 'Nahr El Kebir',
+            'Ob', 'Pakchan', 'Pandaruan', "Pu Lun T'o", 'Rann of Kutch', 'Red', 'Song Hong', 'Rach Giang Thanh',
+            'Nha Be-Saigon-Song Vam Co Dong', 'Salween', 'Sebuku', 'Sepik', 'Song Tien Yen', 'Shu', 'Chu',
+            'Sembakung', 'Sujfun', 'Talas', 'Tami', 'Tigris-Euphrates', 'Shatt al Arab', 'Tjeroaka-Wanggoe',
+            'Tarim', 'Tumen', 'Vanimo-Green', 'Yalu', 'Jenisej', 'Yenisey',
+            # 欧洲
+            'Adige', 'Angerman', 'Bann','Bidasoa', 'Berbyelva', 'Barta', 'Castletown', 'Cetina', 'Danube',
+            'Dnieper', 'Dniester', 'Don', 'Dragonja', 'Drin', 'Daugava', 'Douro', 'Duero', 'Ebro', 'Elbe',
+            'Elancik', 'Erne', 'Fane', 'Flurry', 'Foyle', 'Glama', 'Garonne', 'Gruzskiy Yelanchik', 
+            'Guadiana', 'Gauja', 'Indalsalven', 'Isonzo', 'Jacobs', 'Kemi', 'Kogilnik', 'Krka', 
+            'Klaralven', 'Lava', 'Pregel', 'Lima', 'Lake Prespa', 'Lielupe', 'Lough Melvin', 'Mino',
+            'Mius', 'Maritsa', 'Naatamo', 'Nidelva', 'Neman', 'Neretva', 'Narva', 'Nestos', 'Narynka', 
+            'Oder', 'Odra', 'Olanga', 'Oral', 'Ural', 'Oulu', 'Peschanaya', 'Poldnevaya', 'Po', 'Prohladnaja',
+            'Parnu', 'Psou', 'Pasvik', 'Rezvaya', 'Rhine-Meuse', 'Rhone', 'Roia', 'Salaca', 'Samur', 
+            'Seine', 'Schelde', 'Sarata', 'Struma', 'Sulak', 'Tagus', 'Tejo', 'Tana', 'Terek', 'Torne', 
+            'Tornealven', 'Tuloma', 'Vecht', 'Venta', 'Vefsna', 'Vijose', 'Velaka', 'Volga', 'Vardar', 
+            'Vistula', 'Wista', 'Vuoksa', 'Wiedau', 'Yser',
+            # 北美洲
+            'Alsek', 'Artibonite', 'Belize', 'Caetani', 'Candelaria', 'Changuinola', 'Choluteca', 'Colorado',
+            'Chilkat', 'Columbia', 'Connecticut', 'Coco', 'Segovia', 'Copper', 'Coatan Achute', 'Fraser',
+            'Firth', 'Grijalva', 'Goascoran', 'Hondo', 'Lake Azuei', 'Lake Enriquillo', 'Lempa', 'Lucia',
+            'Massacre', 'Mississippi', 'Moho', 'Motaqua', 'Negro', 'Nelson-Saskatchewan', 'Paz', 'Pedernales',
+            'Rio Grande', 'Santa Clara', 'St. Croix', 'Sixaola', 'St. John', 'San Juan', 'Skagit',
+            'St. Lawrence', 'Sarstun', 'Stikine', 'Suchiate', 'Taku', 'Temash', 'Tijuana', 'Unuk', 'Whiting',
+            'Yaqui', 'Yukon',
+            # 南美洲
+            'Amacuro', 'Amazon', 'Aviles', 'Aysen', 'Baker', 'Barima', 'Carmen Silva', 'Chico', 'Chira',
+            'Chuy', 'Cancoso', 'Lauca', 'Comau', 'Corantijn', 'Courantyne', 'Catatumbo', 'Cullen', 'Essequibo',
+            'Gallegos', 'Chico', 'Jurado', 'Laguna Filaret', 'Lake Fagnano', 'Lake Titicaca-Poopo System',
+            'Lagoon Dos Patos-Lagoon Mirim', 'La Plata', 'Mira', 'Maroni', 'Mataje', 'Orinoco', 'Oiapoque', 
+            'Oyupock', 'Palena', 'Pascua', 'Patia', 'Puelo', 'Rio Grande', 'Seno Union', 'Serrano',
+            'San Martin', 'Tumbes', 'Valdivia', 'Yelcho', 'Zapaleri', 'Zarumilla')
 # 所有河流流域都加上去
 # symbols <- c('-', '_', '%2', '%20')    # 词前后加上-或_以避免误收录
 # plus <- c('pollut', 'contamin', 'toxic', 'waste', 'purification', 'sewage', 'effluence', 'scarc', 'shortage',
@@ -65,22 +83,38 @@ length_rivers <- length(rivers)
 # length_symbols <- length(symbols)
 
 for (num in 1:length_files) {
-  print (news_files[num])
+  # print (news_files[num])
   if(str_detect(news_files[num], "_0_") == TRUE) next
-  possibleError <- tryCatch({
-    text <- read.table(paste(news_address, news_files[num], sep = "\\"))
-    }, error=function(e){
-    cat ('Error! Address: ', news_files[num], '\n')})
-  if(inherits(possibleError, "error")) next
-  print ('Here!')
+  possibleError <- tryCatch(
+    text <- read.table(paste(news_address, news_files[num], sep = "\\")),
+    error=function(e) e) #{
+    # cat ('Error! Address: ', news_files[num], '\n')})
+  if(inherits(possibleError, "error")){
+    # cat ("Show you I can work")
+    cat ('Error! Address: ', news_files[num], '\n')
+    next
+  }
+  text <- unlist(text) %>% as.character()
+  # print ('Here!')
   # for (i in 1:length_countries){
-  #   if (str_detect(as.character(text), countries[i]) == TRUE){
-      for (j in 1:length_rivers){
-        if (str_detect(text, rivers[i]) == TRUE){
-          write.table(text, file = paste(target_address, news_files[num], sep = '\\'), row.names = FALSE, col.names = FALSE)
+  #   if (str_detect(text, countries[i]) == TRUE){
+  save_flag <- FALSE
+  for (j in 1:length_rivers){
+    if(length(text) == 0){
+      cat ('Error! Argument is of length zero, no read outcome! Address: ', news_files[num], '\n')
+      break
+    }
+    if (str_detect(text, paste(paste(" ", rivers[j], sep = ""), " ", sep = "")) == TRUE){
+      save_flag <- TRUE
+      # cat (rivers[j], '\n', news_files[num], '\n')
+      length_text <- length(text)
+      text[length_text + 1] <- rivers[j]
       #   }
       # }
     }
+  }
+  if (save_flag == TRUE){
+    write.table(text, file = paste(target_address, news_files[num], sep = '\\'), row.names = FALSE, col.names = FALSE)
   }
 }
 

@@ -31,11 +31,14 @@ for (num in 1:length_files){
           print ('Find one!')
           print (i)
           # 避免网址不存在，出现404错误
-          possibleError <- tryCatch({
-            web <- read_html(url)
-            }, error=function(e){
-            print('HTTP Error 404, go next.')})
-          if(inherits(possibleError, "error")) next
+          possibleError <- tryCatch(
+            web <- read_html(url),
+            error=function(e) e) #{
+            # print('HTTP Error 404, go next.')})
+          if(inherits(possibleError, "error")){
+            cat ('HTTP Error 404, go next.\n')
+            next
+          }
           # web <- read_html(url)
           # 第一种网页，如https://www.bbc.com/news/uk-northern-ireland-foyle-west-50328767：
           title <- web %>% html_nodes('h1.e1fj1fc10') %>% html_text()
@@ -70,10 +73,19 @@ for (num in 1:length_files){
                   title <- paste(str_sub(gdelt_files[num], 7, 14), paste(as.character(i), paste(as.character(flag), title, sep = '_'), sep = '_'), sep = '_')
                   text <- web %>% html_nodes('p.newsround-story-body__text') %>% html_text()
                 } else {
+          # 第五种网页，如view-source:https://www.bbc.com/news/blogs-trending-51399306：
+                  title <- web %>% html_nodes('div.blog__story h2') %>% html_text()
+                  if (length(title) != 0){
+                    flag <- 5
+                    title <- title[1]
+                    title <- paste(str_sub(gdelt_files[num], 7, 14), paste(as.character(i), paste(as.character(flag), title, sep = '_'), sep = '_'), sep = '_')
+                    text <- web %>% html_nodes('div.story-body__inner p') %>% html_text()
+                  } else {
           # 其它网页，记录下来
-                  flag <- 0
-                  title <- paste(str_sub(gdelt_files[num], 7, 14), paste(as.character(i), paste(as.character(flag), 'other_website', sep = '_'), sep = '_'), sep = '_')
-                  text <- ''
+                    flag <- 0
+                    title <- paste(str_sub(gdelt_files[num], 7, 14), paste(as.character(i), paste(as.character(flag), 'other_website', sep = '_'), sep = '_'), sep = '_')
+                    text <- ''
+                  }
                 }
               }
             }
