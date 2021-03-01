@@ -1,11 +1,12 @@
 # 本程序在已爬虫到的新闻数据中筛选所需数据，并保存，是gdelt_get_web_content.R的后续程序。
 rm(list = ls())
+Sys.setlocale("LC_ALL", "English") # 出现在某些网页内容中的中文引号会导致“EOF within quoted string”的warning，并导致text <- unlist(text) %>% as.character()这一步中所有输出结果变为NA。加上本句可防止这一问题。
 
 library(stringr)
 
-setwd("G:\\")
-news_address <- "G:\\bbc"
-target_address <- "G:\\bbc_selected"
+setwd("E:\\")
+news_address <- "E:\\news\\bbc_20130401_1231"
+target_address <- "E:\\news\\bbc_20130401_1231_selected"
 # 截止至20200914的亚洲、欧洲参与一带一路国家名单，来源：https://www.yidaiyilu.gov.cn/gbjg/gbgk/77073.htm
 # countries <- c('CHN', 'KOR', 'MNG', 'SGP', 'TLS', 'MYS', 'MMR', 'KHM', 'VNM', 'LAO', 'BRN', 'PAK', 'LKA',
 #                'BGD', 'NPL', 'MDV', 'ARE', 'KWT', 'TUR', 'QAT', 'OMN', 'LBN', 'SAU', 'BHR', 'IRN', 'IRQ',
@@ -73,20 +74,63 @@ rivers <- c(# 'water', 'stream', 'river', 'tributary', 'canal', 'lake', 'channel
             'Oyupock', 'Palena', 'Pascua', 'Patia', 'Puelo', 'Rio Grande', 'Seno Union', 'Serrano',
             'San Martin', 'Tumbes', 'Valdivia', 'Yelcho', 'Zapaleri', 'Zarumilla')
 # 所有河流流域都加上去
-# symbols <- c('-', '_', '%2', '%20')    # 词前后加上-或_以避免误收录
-# plus <- c('pollut', 'contamin', 'toxic', 'waste', 'purification', 'sewage', 'effluence', 'scarc', 'shortage',
-#           'lack', 'insufficiency', 'dike', 'dyke', 'irrigation', 'dam', 'diversion', 'flood', 'drought')
+# ！挑出Amazon
+rivers_selected <- c('Amazon', 'Red', 'Orange', 'Congo', 'Niger', 'Gambia', 'Colorado', 'Connecticut', 
+                     'Cross', 'Columbia', 'Mississippi', 'Don', 'Fraser', 'Baker', 'Fly', 'Copper', 'Ma',
+                     'Coco', 'Massacre', 'Negro', 'Senegal', 'Lima', 'Jordan', 'Han', 'Belize', 'Mira', 
+                     'Grijalva', 'Tijuana')
+symbols <- c('-', '_', '[.]', ' ', "'")    # 词前后加上-或_等以确保收录所有独立单词。"."是特殊符号！要括起来
+plus <- c('water', 'stream', 'river', 'tributary', 'canal', 'lake', 'channel','reservoir',
+          'pollut', 'contamin', 'toxic', 'waste', 'purification', 'sewage', 'effluence', 'scarc', 'shortage',
+          'lack', 'insufficiency', 'dike', 'dyke', 'irrigation', 'dam', 'diversion', 'flood', 'drought')
 news_files <- list.files(news_address)
 length_files <- length(news_files)
 length_countries <- length(countries)
 length_rivers <- length(rivers)
-# length_symbols <- length(symbols)
+length_plus <- length(plus)
+length_symbols <- length(symbols)
+
+rivers_detect_1 <- c()
+rivers_detect_2 <- c()
+plus_detect_1 <- c()
+plus_detect_2 <- c()
+for (river_num in 1:length_rivers){
+  for (a in 1:length_symbols){
+    for (b in 1:length_symbols){
+      river_word <- paste(paste(symbols[a], rivers[river_num], sep = ""), symbols[b], sep = "")
+      if (rivers[river_num] %in% rivers_selected) {
+        rivers_detect_1 <- c(rivers_detect_1, river_word)
+      } else {
+        rivers_detect_2 <- c(rivers_detect_2, river_word)
+      }
+    }
+  }
+}
+for (plus_num in 1:length_plus){
+  for (a in 1:length_symbols){
+    for (b in 1:length_symbols){
+      plus_word <- paste(paste(symbols[a], plus[plus_num], sep = ""), symbols[b], sep = "")
+      if (plus_num <= 8){
+        plus_detect_1 <- c(plus_detect_1, plus_word)
+      } else {
+        plus_detect_2 <- c(plus_detect_2, plus_word)
+      }
+    }
+  }
+}
+
+length_rivers_detect_1 <- length(rivers_detect_1)   #含有除了河流名称之外其它含义的词汇
+length_rivers_detect_2 <- length(rivers_detect_2)   #主要作为河流名称使用的词汇
+length_plus_detect_1 <- length(plus_detect_1)       #河流标志性词汇
+length_plus_detect_2 <- length(plus_detect_2)       #其它可能和河流有关的词汇
+plus_detect <- c(plus_detect_1, plus_detect_2)
+length_plus_detect <- length(plus_detect)
 
 for (num in 1:length_files) {
-  # print (news_files[num])
+  print (news_files[num])
   if(str_detect(news_files[num], "_0_") == TRUE) next
   possibleError <- tryCatch(
-    text <- read.table(paste(news_address, news_files[num], sep = "\\")),
+    text <- read.table(paste(news_address, news_files[num], sep = "\\"), fill = TRUE),
     error=function(e) e) #{
     # cat ('Error! Address: ', news_files[num], '\n')})
   if(inherits(possibleError, "error")){
@@ -99,18 +143,49 @@ for (num in 1:length_files) {
   # for (i in 1:length_countries){
   #   if (str_detect(text, countries[i]) == TRUE){
   save_flag <- FALSE
-  for (j in 1:length_rivers){
-    if(length(text) == 0){
-      cat ('Error! Argument is of length zero, no read outcome! Address: ', news_files[num], '\n')
-      break
+  if(length(text) == 0){
+    cat ('Error! Argument is of length zero, no read outcome! Address: ', news_files[num], '\n')
+    next
+  }
+  text <- c(Reduce('paste', text[1:length(text)-1]), text[length(text)])  #将除了网址以外的内容合并
+  for (j in 1:length_rivers_detect_1){
+    if (str_detect(text[1], rivers_detect_1[j]) == TRUE){
+      cat ('here! 1')
+      for (i in 1:length_plus_detect_1){  # 已解决。问题！1、若河流名称出现在句子开头或结尾，即前后无空格，则不会被筛出；2、未能成功添加空格
+        if (str_detect(tolower(gsub("[^[:alnum:] ]", "", text)), plus_detect_1[i]) == TRUE){
+          cat ('here! 2')
+          for (k in 1:length_plus_detect_2){
+            if (str_detect(tolower(gsub("[^[:alnum:] ]", "", text)), plus_detect_2[k]) == TRUE){ # tolower中的文本必须确保都是英文，没有其它字符。
+              save_flag <- TRUE
+              # cat (rivers[j], '\n', news_files[num], '\n')
+              length_text <- length(text)
+              text[length_text + 1] <- 'Type 1 river'
+              text[length_text + 2] <- paste('River name: ', rivers_detect_1[j], ' ')
+              text[length_text + 3] <- paste('Plus 1: ', plus_detect_1[i], ' ')
+              text[length_text + 4] <- paste('Plus 2: ', plus_detect_2[k], ' ')
+              #   }
+              # }
+            }
+          }
+        }
+      }
     }
-    if (str_detect(text, paste(paste(" ", rivers[j], sep = ""), " ", sep = "")) == TRUE){
-      save_flag <- TRUE
-      # cat (rivers[j], '\n', news_files[num], '\n')
-      length_text <- length(text)
-      text[length_text + 1] <- rivers[j]
-      #   }
-      # }
+  }
+  for (j in 1:length_rivers_detect_2){
+    if (str_detect(text[1], rivers_detect_2[j]) == TRUE){
+      cat ('here! 3')
+      for (i in 1: length_plus_detect){  # 已解决。重大问题！1、若河流名称出现在句子开头或结尾，即前后无空格，则不会被筛出；2、未能成功添加空格
+        if (str_detect(tolower(gsub("[^[:alnum:] ]", "", text)), plus_detect[i]) == TRUE){ # tolower中的文本必须确保都是英文，没有其它字符。
+          save_flag <- TRUE
+          # cat (rivers[j], '\n', news_files[num], '\n')
+          length_text <- length(text)
+          text[length_text + 1] <- 'Type 2 river'
+          text[length_text + 2] <- paste('River name: ', rivers_detect_2[j], ' ')
+          text[length_text + 3] <- paste('Plus: ', plus_detect[i], ' ')
+          #   }
+          # }
+        }
+      }
     }
   }
   if (save_flag == TRUE){
